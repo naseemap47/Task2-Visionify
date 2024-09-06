@@ -1,8 +1,20 @@
 from ultralytics import YOLO
 import cv2
 import random
-import numpy as np
+import argparse
 import os
+
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-m", "--model", type=str,  default='yolov8n.pt',
+                help="path to model.h5")
+ap.add_argument("-v", "--source", type=str, required=True,
+                help="path to video")
+ap.add_argument("-c", "--conf", type=float, default=0.25,
+                help="Prediction confidence (0<conf<1)")
+ap.add_argument("--save", action='store_true',
+                help="Save video")
+args = vars(ap.parse_args())
 
 
 def plot_one_box(x, img, color=None, label=None, line_thickness=3):
@@ -19,20 +31,18 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=3):
         cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
 
 
-
 # Load a model
-model = YOLO("yolov8n.pt")
+model = YOLO(args["model"])
 class_names = model.names
 print('Class Names: ', class_names)
 colors = [[random.randint(0, 255) for _ in range(3)] for _ in class_names]
 
 # create a video capture object for the camera or video
-cap = cv2.VideoCapture('task/5738755-hd_1920_1080_24fps.mp4')
+cap = cv2.VideoCapture(args["source"])
 
 
 # Write Video
-save = True
-if save:
+if args['save']:
     # Get the width and height of the video.
     original_video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     original_video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -55,7 +65,7 @@ while True:
         break
     
     # Get detection output from model with tracker
-    results = model.track(img, tracker="bytetrack.yaml")
+    results = model.track(img, tracker="bytetrack.yaml", conf=args['conf'])
     # for one video or camera results[0]
     # otherwise for mutilple camera or video (batching)
     for result in results:
@@ -78,7 +88,7 @@ while True:
                     3
                 )
     # Write Video
-    if save:
+    if args['save']:
         out_vid.write(img)
     
     cv2.imshow('Track Person', img)
@@ -86,6 +96,6 @@ while True:
         break
 
 cap.release()
-if save:
+if args['save']:
     out_vid.release()
 cv2.destroyAllWindows()
