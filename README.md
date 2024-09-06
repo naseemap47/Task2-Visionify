@@ -25,7 +25,8 @@ conda install pytorch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 cpuonly -c py
 pip install -r requirements.txt
 ```
 ## Inference
-- `-m`, `--model`: path to yolov8 model.
+- `-m`, `--model`: path to yolov8 model.<br>
+**If YOLOv8 COCO model not present, It will automatically download.**
 - `-s`, `--source`: path to video (*.mp4).
 - `-c`, `--conf`: Prediction confidence (0<conf<1).
 - `-t`, `--tracker`: choose tracker `botsort` or `bytetrack`.
@@ -34,8 +35,8 @@ pip install -r requirements.txt
 Example:
 
 ```bash
-python3 main.py -s videos/5738755-hd_1920_1080_24fps.mp4
+python3 main.py -s videos/5738755-hd_1920_1080_24fps.mp4 -m yolov8s.pt -c 0.25
 
 # To Save
-python3 main.py -s videos/11022597-hd_1920_1080_25fps.mp4 --save
+python3 main.py -s videos/11022597-hd_1920_1080_25fps.mp4 -m yolov8n.pt -c 0.25 --save
 ```
