@@ -7,11 +7,14 @@ import os
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-m", "--model", type=str,  default='yolov8n.pt',
-                help="path to model.h5")
-ap.add_argument("-v", "--source", type=str, required=True,
+                help="path to yolov8 model")
+ap.add_argument("-s", "--source", type=str, required=True,
                 help="path to video")
 ap.add_argument("-c", "--conf", type=float, default=0.25,
                 help="Prediction confidence (0<conf<1)")
+ap.add_argument("-t", "--tracker", type=str, default='botsort',
+                choices=['botsort', 'bytetrack'],
+                help="choose tracker")
 ap.add_argument("--save", action='store_true',
                 help="Save video")
 args = vars(ap.parse_args())
@@ -65,14 +68,18 @@ while True:
         break
     
     # Get detection output from model with tracker
-    results = model.track(img, tracker="bytetrack.yaml", conf=args['conf'])
+    results = model.track(img, tracker=args["tracker"]+".yaml", conf=args['conf'])
     # for one video or camera results[0]
     # otherwise for mutilple camera or video (batching)
     for result in results:
         bboxs = result.boxes.xyxy
         conf = result.boxes.conf
         cls = result.boxes.cls
-        track_ids = result.boxes.id.int().cpu().tolist()
+        # If object is not present in the frame
+        if result.boxes.id is not None:
+            track_ids = result.boxes.id.int().cpu().tolist()
+        else:
+            track_ids = ['']
         for bbox, cnf, cs, track_id in zip(bboxs, conf, cls, track_ids):
             xmin = int(bbox[0])
             ymin = int(bbox[1])
@@ -84,7 +91,7 @@ while True:
                 # plot bounding box on the top of person with track id, class name and detection confidence.
                 plot_one_box(
                     [xmin, ymin, xmax, ymax], img,
-                    colors[int(cs)], f'{track_id} {class_names[int(cs)]} {float(cnf):.3}',
+                    colors[int(cs)], f'{class_names[int(cs)]} ID: {track_id}', # {float(cnf):.3}
                     3
                 )
     # Write Video
