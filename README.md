@@ -8,6 +8,14 @@ For PoC purposes we can use simple OpenCV and YOLOv8.
 For the production or deployment purposes we can use [Deepstream pipline](https://developer.nvidia.com/deepstream-sdk) or [jetson-inference pipeline](https://github.com/dusty-nv/jetson-inference).<br>
 In this way we will get best and optimised performance.
 
+### Limitations
+- Detection model performance
+- Botsort assigns the track IDs to the object early, but it sometimes misses the tracking in a few frames for a specific object.
+- On the other side, Bytetrack tries to assign IDs after more calculations over several frames, but then the tracking ID is much more stable over frames.
+-  Due to the immediate assigning of tracking ID in botsort, sometimes it considers a 2-3 frames detection as part of the track and assigns them tracking ID which can cause issues because later objects do not exist in coming frames.
+- Bytetrack on the other side does not consider that object as a track. 
+- Bytetrack is slow as compared to Botsort in processing, which means low FPS, but better accuracy.
+
 ## Installation Setup
 ### 1. Clone the repo
 ```bash
