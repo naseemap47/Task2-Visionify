@@ -1,7 +1,7 @@
 """
 Track person accross frames with YOLOv8 COCO detection model 
 with 'botsort' and 'bytetrack' tracker.
-Assuming that only one person is pressent in the frame.
+Assuming that one or more than one person is pressent in the frame.
 """
 
 from ultralytics import YOLO
