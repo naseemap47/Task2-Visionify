@@ -18,7 +18,7 @@ ap.add_argument("-s", "--source", type=str, required=True,
                 help="path to video")
 ap.add_argument("-c", "--conf", type=float, default=0.25,
                 help="Prediction confidence (0<conf<1)")
-ap.add_argument("-t", "--tracker", type=str, default='botsort',
+ap.add_argument("-t", "--tracker", type=str, default='bytetrack',
                 choices=['botsort', 'bytetrack'],
                 help="choose tracker")
 ap.add_argument("--save", action='store_true',
