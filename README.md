@@ -32,6 +32,10 @@ conda install pytorch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 pytorch-cuda=
 conda install pytorch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 cpuonly -c pytorch -y
 pip install -r requirements.txt
 ```
+### 3. Prepare sample video data
+```bash
+bash prepare_data.sh
+```
 ## Inference
 - `-m`, `--model`: path to yolov8 model.<br>
 **If YOLOv8 COCO model not present, It will automatically download.**
